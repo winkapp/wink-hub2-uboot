@@ -1,12 +1,13 @@
 /*
  * Copyright (C) 2015 Freescale Semiconductor, Inc.
  *
- * Configuration settings for the Freescale i.MX6UL 14x14 EVK board.
+ * Configuration settings for the Flex Wink Hub V2 board.
+ * Cloned with modifications from Freescale i.MX6UL 14x14 EVK board.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
-#ifndef __MX6UL_14X14_EVK_CONFIG_H
-#define __MX6UL_14X14_EVK_CONFIG_H
+#ifndef __MX6UL_FLEX_WINKHUB2_CONFIG_H
+#define __MX6UL_FLEX_WINKHUB2_CONFIG_H
 
 
 #include <asm/arch/imx-regs.h>
@@ -182,7 +183,7 @@
 	"console=ttymxc0\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
-	"fdt_file=imx6ul-14x14-evk.dtb\0" \
+	"fdt_file=imx6ul-flex-winkhub.dtb\0" \
 	"fdt_addr=0x83000000\0" \
 	"boot_fdt=try\0" \
 	"ip_dyn=yes\0" \
@@ -397,10 +398,6 @@
 #define CONFIG_MXC_USB_PORTSC  (PORT_PTS_UTMI | PORT_PTS_PTW)
 #define CONFIG_MXC_USB_FLAGS   0
 #define CONFIG_USB_MAX_CONTROLLER_COUNT 2
-#endif
-
-#if defined(CONFIG_ANDROID_SUPPORT)
-#include "mx6ul_14x14_evk_android.h"
 #endif
 
 #endif
