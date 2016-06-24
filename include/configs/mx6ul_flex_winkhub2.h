@@ -135,8 +135,10 @@
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 #ifdef CONFIG_SYS_BOOT_NAND
-#define CONFIG_MFG_NAND_PARTITION "mtdparts=gpmi-nand:4m(boot),11m(kernel),1m(dtb),-(rootfs) "
+#define CONFIG_WINK_NAND_PARTITIONING "mtdparts=gpmi-nand:4m(boot),11m(kernel),1m(dtb),-(rootfs)"
+#define CONFIG_MFG_NAND_PARTITION CONFIG_WINK_NAND_PARTITIONING " "
 #else
+#define CONFIG_WINK_NAND_PARTITIONING ""
 #define CONFIG_MFG_NAND_PARTITION ""
 #endif
 
@@ -169,7 +171,7 @@
 	"console=ttymxc0\0" \
 	"bootargs=console=ttymxc0,115200 ubi.mtd=3 "  \
 		"root=ubi0:rootfs rootfstype=ubifs "		     \
-		"mtdparts=gpmi-nand:4m(boot),11m(kernel),1m(dtb),-(rootfs)\0"\
+		CONFIG_WINK_NAND_PARTITIONING "\0" \
 	"bootcmd=nand read ${loadaddr} 0x400000 0xb00000;"\
 		"nand read ${fdt_addr} 0xf00000 0x100000;"\
 		"bootz ${loadaddr} - ${fdt_addr}\0"
