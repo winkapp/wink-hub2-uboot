@@ -135,7 +135,10 @@
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 #ifdef CONFIG_SYS_BOOT_NAND
-#define CONFIG_WINK_NAND_PARTITIONING "mtdparts=gpmi-nand:4m(boot),11m(kernel),1m(dtb),-(rootfs)"
+#define CONFIG_WINK_NAND_PARTITIONING "mtdparts=gpmi-nand:3m(boot)" \
+    ",128k(updater-dtb),3968k(updater-kernel),28m(updater-rootfs)" \
+    ",8m(database)" \
+    ",128k(dtb),8064k(kernel),-(rootfs)"
 #define CONFIG_MFG_NAND_PARTITION CONFIG_WINK_NAND_PARTITIONING " "
 #else
 #define CONFIG_WINK_NAND_PARTITIONING ""
@@ -169,11 +172,12 @@
 	"fdt_addr=0x83000000\0" \
 	"fdt_high=0xffffffff\0"	  \
 	"console=ttymxc0\0" \
-	"bootargs=console=ttymxc0,115200 ubi.mtd=3 "  \
-		"root=ubi0:rootfs rootfstype=ubifs "		     \
+	"bootargs=console=ttymxc0,115200 ubi.mtd=7 " \
+		"root=ubi0:rootfs rootfstype=ubifs " \
 		CONFIG_WINK_NAND_PARTITIONING "\0" \
-	"bootcmd=nand read ${loadaddr} 0x400000 0xb00000;"\
-		"nand read ${fdt_addr} 0xf00000 0x100000;"\
+	"bootcmd=mtdparts default;"\
+		"nand read ${loadaddr} kernel 0x7e0000;"\
+		"nand read ${fdt_addr} dtb 0x020000;"\
 		"bootz ${loadaddr} - ${fdt_addr}\0"
 
 #else
@@ -316,6 +320,13 @@
 #define CONFIG_SYS_NAND_BASE		0x40000000
 #define CONFIG_SYS_NAND_5_ADDR_CYCLE
 #define CONFIG_SYS_NAND_ONFI_DETECTION
+
+/* MTD Partitioning */
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_MTD_DEVICE
+#define CONFIG_MTD_PARTITIONS
+#define MTDIDS_DEFAULT  "nand0=gpmi-nand"
+#define MTDPARTS_DEFAULT CONFIG_WINK_NAND_PARTITIONING
 
 /* DMA stuff, needed for GPMI/MXS NAND support */
 #define CONFIG_APBH_DMA
