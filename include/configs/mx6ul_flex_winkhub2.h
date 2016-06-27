@@ -61,8 +61,8 @@
 #define CONFIG_MXC_OCOTP
 #endif
 
-/* MMC Configs */
-#define CONFIG_FSL_USDHC
+/* MMC Configs -- disabled */
+/* #define CONFIG_FSL_USDHC */
 #ifdef CONFIG_FSL_USDHC
 #define CONFIG_FSL_ESDHC
 #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
@@ -121,7 +121,7 @@
 
 #define PHYS_SDRAM_SIZE			SZ_512M
 
-#define CONFIG_VIDEO
+/* #define CONFIG_VIDEO */
 
 /* Command definition */
 #include <config_cmd_default.h>
