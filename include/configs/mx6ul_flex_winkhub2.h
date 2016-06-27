@@ -321,6 +321,12 @@
 #define CONFIG_SYS_NAND_5_ADDR_CYCLE
 #define CONFIG_SYS_NAND_ONFI_DETECTION
 
+/* UBIFS support */
+#define CONFIG_CMD_UBI
+#define CONFIG_CMD_UBIFS
+#define CONFIG_RBTREE
+#define CONFIG_LZO
+
 /* MTD Partitioning */
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_MTD_DEVICE
