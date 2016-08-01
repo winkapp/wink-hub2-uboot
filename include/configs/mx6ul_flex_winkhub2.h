@@ -172,14 +172,44 @@
 	"fdt_addr=0x83000000\0" \
 	"fdt_high=0xffffffff\0"	  \
 	"console=ttymxc0\0" \
-	"bootargs=console=ttymxc0,115200 ubi.mtd=7 " \
+	"appboot_args=console=ttymxc0,115200 ubi.mtd=7 " \
 		"root=ubi0:rootfs rootfstype=ubifs " \
 		CONFIG_WINK_NAND_PARTITIONING "\0" \
-	"bootcmd=mtdparts default;"\
-		"nand read ${loadaddr} kernel 0x7e0000;"\
-		"nand read ${fdt_addr} dtb 0x020000;"\
-		"bootz ${loadaddr} - ${fdt_addr}\0"
-
+	"updater_args=console=ttymxc0,115200 ubi.mtd=3 " \
+		"root=ubi0:rootfs rootfstype=ubifs " \
+		CONFIG_WINK_NAND_PARTITIONING "\0" \
+	"boot_select=" \
+		"setenv badflags; " \
+		"mtdparts default && ubi part database && " \
+		"ubifsmount ubi0:database && " \
+		"mw 83000000 0 8 && mw 83000004 30 &&" \
+		"ubifsload 83000000 DO_UPDATE 1 && " \
+		"if cmp 83000000 83000004 1; " \
+			"then run boot_app; " \
+			"else run boot_updater; " \
+		"fi\0" \
+	"boot_app=" \
+		"run app_boot; " \
+		"setenv badflags badapp; " \
+		"run updater_boot\0" \
+	"boot_updater=" \
+		"run updater_boot; " \
+		"setenv badflags badupdater; " \
+		"run app_boot\0" \
+	"app_boot=" \
+		"setenv bootargs ${appboot_args} ${badflags}; " \
+		"nand read ${loadaddr} kernel; " \
+		"nand read ${fdt_addr} dtb; " \
+		"bootz ${loadaddr} - ${fdt_addr}\0" \
+	"updater_boot=" \
+		"setenv bootargs ${updater_args} ${badflags}; " \
+		"nand read ${loadaddr} updater-kernel; " \
+		"nand read ${fdt_addr} updater-dtb; " \
+		"bootz ${loadaddr} - ${fdt_addr}\0" \
+	"bootcmd=" \
+		"run boot_select; " \
+		"echo Falling back to updater...; "\
+		"run boot_updater\0"
 #else
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
