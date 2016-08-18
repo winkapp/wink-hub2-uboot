@@ -26,6 +26,7 @@
 #include <netdev.h>
 #include <usb.h>
 #include <usb/ehci-fsl.h>
+#include <pwm.h>
 
 #ifdef CONFIG_POWER
 #include <power/pmic.h>
@@ -109,6 +110,48 @@ static iomux_v3_cfg_t const iox_pads[] = {
 	/* IOX_nOE */
 	MX6_PAD_SNVS_TAMPER8__GPIO5_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
+
+/* The following mappings are derived from the schematic */
+#define LED_R IMX_GPIO_NR(1, 4)
+#define LED_G IMX_GPIO_NR(1, 9)
+#define LED_B IMX_GPIO_NR(1, 8)
+/* I have no idea why the following mappings are true, I just experimented till it worked*/
+#define PWM_LED_R 1
+#define PWM_LED_G 2
+#define PWM_LED_B 0
+
+static iomux_v3_cfg_t const led_pads[] = {
+	MX6_PAD_GPIO1_IO04__PWM3_OUT | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_GPIO1_IO08__PWM1_OUT | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_GPIO1_IO09__PWM2_OUT | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+void led_init(void)
+{
+	imx_iomux_v3_setup_multiple_pads(
+		led_pads,
+		ARRAY_SIZE(led_pads));
+
+	if (pwm_init(PWM_LED_R, 0, 0)) goto error;
+	if (pwm_config(PWM_LED_R, 1100, 3000)) goto error;
+	if (pwm_enable(PWM_LED_R)) goto error;
+
+	if (pwm_init(PWM_LED_G, 0, 0)) goto error;
+	if (pwm_config(PWM_LED_G, 3000, 3000)) goto error;
+	if (pwm_enable(PWM_LED_G)) goto error;
+
+	if (pwm_init(PWM_LED_B, 0, 0)) goto error;
+	if (pwm_config(PWM_LED_B, 2500, 3000)) goto error;
+	if (pwm_enable(PWM_LED_B)) goto error;
+	return;
+
+error:
+	puts("error init pwm for leds\n");
+	gpio_direction_output(LED_R, 1);
+	gpio_direction_output(LED_G, 1);
+	gpio_direction_output(LED_B, 1);
+	return;
+}
 
 /*
  * HDMI_nRST --> Q0
@@ -914,6 +957,9 @@ int board_init(void)
 	imx_iomux_v3_setup_multiple_pads(iox_pads, ARRAY_SIZE(iox_pads));
 
 	iox74lv_init();
+
+	/* Party time, turn on the lights */
+	led_init();
 
 #ifdef CONFIG_SYS_I2C_MXC
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);

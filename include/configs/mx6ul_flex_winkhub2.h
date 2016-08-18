@@ -449,4 +449,8 @@
 #define CONFIG_USB_MAX_CONTROLLER_COUNT 2
 #endif
 
+/* PWM Configs */
+#define CONFIG_PWM_IMX
+#define CONFIG_IMX6_PWM_PER_CLK	66000000
+
 #endif
