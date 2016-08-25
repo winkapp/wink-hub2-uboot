@@ -139,9 +139,9 @@
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 #ifdef CONFIG_SYS_BOOT_NAND
 #define CONFIG_WINK_NAND_PARTITIONING "mtdparts=gpmi-nand:3m(boot)" \
-    ",128k(updater-dtb),32640k(updater)" \
+    ",32m(updater)" \
     ",10m(database)" \
-    ",128k(app-dtb),-(app)"
+    ",-(app)"
 #define CONFIG_MFG_NAND_PARTITION CONFIG_WINK_NAND_PARTITIONING " "
 #else
 #define CONFIG_WINK_NAND_PARTITIONING ""
