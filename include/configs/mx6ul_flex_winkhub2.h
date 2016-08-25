@@ -172,7 +172,7 @@
 	"fdt_addr=0x80800000\0" \
 	"fdt_high=0x81000000\0"	  \
 	"console=ttymxc0\0" \
-	"boot_args=console=ttymxc0,115200" \
+	"boot_args=console=ttymxc0,115200 " \
 		CONFIG_WINK_NAND_PARTITIONING "\0" \
 	"boot_select=" \
 		"setenv badflags; " \
