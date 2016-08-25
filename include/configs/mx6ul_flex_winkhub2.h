@@ -130,15 +130,15 @@
 
 #define CONFIG_BOOTDELAY		3
 
-#define CONFIG_LOADADDR			0x80800000
+#define CONFIG_LOADADDR			0x81000000
 #define CONFIG_SYS_TEXT_BASE		0x87800000
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 #ifdef CONFIG_SYS_BOOT_NAND
 #define CONFIG_WINK_NAND_PARTITIONING "mtdparts=gpmi-nand:3m(boot)" \
-    ",128k(updater-dtb),3968k(updater-kernel),28m(updater-rootfs)" \
-    ",8m(database)" \
-    ",128k(dtb),8064k(kernel),-(rootfs)"
+    ",128k(updater-dtb),32640k(updater)" \
+    ",10m(database)" \
+    ",128k(app-dtb),-(app)"
 #define CONFIG_MFG_NAND_PARTITION CONFIG_WINK_NAND_PARTITIONING " "
 #else
 #define CONFIG_WINK_NAND_PARTITIONING ""
@@ -169,14 +169,10 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
 	CONFIG_VIDEO_MODE \
-	"fdt_addr=0x83000000\0" \
-	"fdt_high=0xffffffff\0"	  \
+	"fdt_addr=0x80800000\0" \
+	"fdt_high=0x81000000\0"	  \
 	"console=ttymxc0\0" \
-	"appboot_args=console=ttymxc0,115200 ubi.mtd=7 " \
-		"root=ubi0:rootfs rootfstype=ubifs " \
-		CONFIG_WINK_NAND_PARTITIONING "\0" \
-	"updater_args=console=ttymxc0,115200 ubi.mtd=3 " \
-		"root=ubi0:rootfs rootfstype=ubifs " \
+	"boot_args=console=ttymxc0,115200" \
 		CONFIG_WINK_NAND_PARTITIONING "\0" \
 	"boot_select=" \
 		"setenv badflags; " \
@@ -197,13 +193,13 @@
 		"setenv badflags badupdater; " \
 		"run app_boot\0" \
 	"app_boot=" \
-		"setenv bootargs ${appboot_args} ${badflags}; " \
-		"nand read ${loadaddr} kernel; " \
-		"nand read ${fdt_addr} dtb; " \
+		"setenv bootargs ${boot_args} ${badflags}; " \
+		"nand read ${loadaddr} app; " \
+		"nand read ${fdt_addr} app-dtb; " \
 		"bootz ${loadaddr} - ${fdt_addr}\0" \
 	"updater_boot=" \
-		"setenv bootargs ${updater_args} ${badflags}; " \
-		"nand read ${loadaddr} updater-kernel; " \
+		"setenv bootargs ${boot_args} ${badflags}; " \
+		"nand read ${loadaddr} updater; " \
 		"nand read ${fdt_addr} updater-dtb; " \
 		"bootz ${loadaddr} - ${fdt_addr}\0" \
 	"bootcmd=" \
