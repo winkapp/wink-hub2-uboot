@@ -37,7 +37,7 @@
 #endif
 
 /* Increase size for kernel with initramfs */
-#define CONFIG_SYS_BOOTM_LEN (80 * 1024 * 1024)
+#define CONFIG_SYS_BOOTM_LEN (80 * SZ_1M)
 
 #define CONFIG_CMDLINE_TAG
 #define CONFIG_SETUP_MEMORY_TAGS
