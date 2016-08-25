@@ -36,6 +36,9 @@
 #endif
 #endif
 
+/* Increase size for kernel with initramfs */
+#define CONFIG_SYS_BOOTM_LEN (80 * 1024 * 1024)
+
 #define CONFIG_CMDLINE_TAG
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_INITRD_TAG
@@ -194,14 +197,12 @@
 		"run app_boot\0" \
 	"app_boot=" \
 		"setenv bootargs ${boot_args} ${badflags}; " \
-		"nand read ${loadaddr} app; " \
-		"nand read ${fdt_addr} app-dtb; " \
-		"bootz ${loadaddr} - ${fdt_addr}\0" \
+		"nboot app; " \
+		"bootm\0" \
 	"updater_boot=" \
 		"setenv bootargs ${boot_args} ${badflags}; " \
-		"nand read ${loadaddr} updater; " \
-		"nand read ${fdt_addr} updater-dtb; " \
-		"bootz ${loadaddr} - ${fdt_addr}\0" \
+		"nboot updater; " \
+		"bootm\0" \
 	"bootcmd=" \
 		"run boot_select; " \
 		"echo Falling back to updater...; "\
