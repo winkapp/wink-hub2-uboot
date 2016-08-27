@@ -27,7 +27,9 @@
 #include <asm/byteorder.h>
 #include <jffs2/jffs2.h>
 #include <nand.h>
-
+#if defined(CONFIG_SECURE_BOOT)
+	#include <asm/arch/hab.h>
+#endif
 #if defined(CONFIG_CMD_MTDPARTS)
 
 /* partition handling routines */
@@ -925,6 +927,10 @@ static int nand_load_image(cmd_tbl_t *cmdtp, nand_info_t *nand,
 		image_print_contents (hdr);
 
 		cnt = image_get_image_size (hdr);
+		#ifdef CONFIG_SECURE_BOOT
+			cnt = image_size_with_srk(cnt);
+			puts ("Secure boot on, reading %zu bytes to get SRK data\n", cnt);
+		#endif
 		break;
 #endif
 #if defined(CONFIG_FIT)
