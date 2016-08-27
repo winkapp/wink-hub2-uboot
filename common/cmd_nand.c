@@ -929,7 +929,7 @@ static int nand_load_image(cmd_tbl_t *cmdtp, nand_info_t *nand,
 		cnt = image_get_image_size (hdr);
 		#ifdef CONFIG_SECURE_BOOT
 			cnt = image_size_with_srk(cnt);
-			puts ("Secure boot on, reading %zu bytes to get SRK data\n", cnt);
+			printf("Secure boot on, reading %zu bytes to get SRK data\n", cnt);
 		#endif
 		break;
 #endif
