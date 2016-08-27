@@ -189,6 +189,19 @@ int get_hab_status(void)
 	return 0;
 }
 
+size_t image_size_with_srk(size_t image_size)
+{
+	ptrdiff_t ivt_offset = 0;
+	size_t bytes = 0;
+
+	/* If not already aligned, Align to ALIGN_SIZE */
+	ivt_offset = (image_size + ALIGN_SIZE - 1) &
+			~(ALIGN_SIZE - 1);
+	bytes = ivt_offset + IVT_SIZE + CSF_PAD_SIZE;
+
+	return bytes;
+}
+
 uint32_t authenticate_image(uint32_t ddr_start, uint32_t image_size)
 {
 	uint32_t load_addr = 0;

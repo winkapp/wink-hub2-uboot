@@ -36,6 +36,9 @@
 #endif
 #endif
 
+/* Increase size for kernel with initramfs */
+#define CONFIG_SYS_BOOTM_LEN (80 * SZ_1M)
+
 #define CONFIG_CMDLINE_TAG
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_INITRD_TAG
@@ -136,9 +139,9 @@
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 #ifdef CONFIG_SYS_BOOT_NAND
 #define CONFIG_WINK_NAND_PARTITIONING "mtdparts=gpmi-nand:3m(boot)" \
-    ",128k(updater-dtb),3968k(updater-kernel),28m(updater-rootfs)" \
-    ",8m(database)" \
-    ",128k(dtb),8064k(kernel),-(rootfs)"
+    ",32m(updater)" \
+    ",10m(database)" \
+    ",-(app)"
 #define CONFIG_MFG_NAND_PARTITION CONFIG_WINK_NAND_PARTITIONING " "
 #else
 #define CONFIG_WINK_NAND_PARTITIONING ""
@@ -163,20 +166,16 @@
 		"\0" \
 	"initrd_addr=0x83800000\0" \
 	"initrd_high=0xffffffff\0" \
+	"fdt_addr=0x83000000\0" \
+	"fdt_high=0xffffffff\0"	  \
 	"bootcmd_mfg=run mfgtool_args;bootz ${loadaddr} ${initrd_addr} ${fdt_addr};\0" \
 
 #if defined(CONFIG_SYS_BOOT_NAND)
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
 	CONFIG_VIDEO_MODE \
-	"fdt_addr=0x83000000\0" \
-	"fdt_high=0xffffffff\0"	  \
 	"console=ttymxc0\0" \
-	"appboot_args=console=ttymxc0,115200 ubi.mtd=7 " \
-		"root=ubi0:rootfs rootfstype=ubifs " \
-		CONFIG_WINK_NAND_PARTITIONING "\0" \
-	"updater_args=console=ttymxc0,115200 ubi.mtd=3 " \
-		"root=ubi0:rootfs rootfstype=ubifs " \
+	"boot_args=console=ttymxc0,115200 " \
 		CONFIG_WINK_NAND_PARTITIONING "\0" \
 	"boot_select=" \
 		"setenv badflags; " \
@@ -197,15 +196,13 @@
 		"setenv badflags badupdater; " \
 		"run app_boot\0" \
 	"app_boot=" \
-		"setenv bootargs ${appboot_args} ${badflags}; " \
-		"nand read ${loadaddr} kernel; " \
-		"nand read ${fdt_addr} dtb; " \
-		"bootz ${loadaddr} - ${fdt_addr}\0" \
+		"setenv bootargs ${boot_args} ${badflags}; " \
+		"nboot app; " \
+		"bootm\0" \
 	"updater_boot=" \
-		"setenv bootargs ${updater_args} ${badflags}; " \
-		"nand read ${loadaddr} updater-kernel; " \
-		"nand read ${fdt_addr} updater-dtb; " \
-		"bootz ${loadaddr} - ${fdt_addr}\0" \
+		"setenv bootargs ${boot_args} ${badflags}; " \
+		"nboot updater; " \
+		"bootm\0" \
 	"bootcmd=" \
 		"run boot_select; " \
 		"echo Falling back to updater...; "\

@@ -52,6 +52,7 @@ typedef enum hab_status hab_rvt_exit_t(void);
 typedef void *hab_rvt_authenticate_image_t(uint8_t, ptrdiff_t,
 		void **, size_t *, hab_loader_callback_f_t);
 typedef void hapi_clock_init_t(void);
+size_t image_size_with_srk(size_t image_size);
 
 #ifdef CONFIG_ROM_UNIFIED_SECTIONS
 #define HAB_RVT_BASE			0x00000100
