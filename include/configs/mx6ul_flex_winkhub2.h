@@ -141,6 +141,7 @@
 #define CONFIG_WINK_NAND_PARTITIONING "mtdparts=gpmi-nand:3m(boot)" \
     ",32m(updater)" \
     ",10m(database)" \
+    ",10m(dbBackup)" \
     ",-(app)"
 #define CONFIG_MFG_NAND_PARTITION CONFIG_WINK_NAND_PARTITIONING " "
 #else
