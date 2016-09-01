@@ -131,7 +131,16 @@
 
 #undef CONFIG_CMD_IMLS
 
-#define CONFIG_BOOTDELAY		3
+/* Autoboot */
+#define CONFIG_BOOTDELAY		0
+#undef CONFIG_ZERO_BOOTDELAY_CHECK /* Don't allow button press to interrupt boot */
+#define CONFIG_BOOT_RETRY_TIME	0 /* If autoboot is stopped, retry immediately */
+#define CONFIG_RESET_TO_RETRY
+
+/* Console */
+#define CONFIG_SILENT_CONSOLE /* allow silencing console with 'silent' env var */
+#define CONFIG_SYS_DEVICE_NULLDEV /* create null output */
+#define CONFIG_SILENT_U_BOOT_ONLY /* only silence u-boot, not kernel */
 
 #define CONFIG_LOADADDR			0x80800000
 #define CONFIG_SYS_TEXT_BASE		0x87800000
@@ -207,7 +216,9 @@
 	"bootcmd=" \
 		"run boot_select; " \
 		"echo Falling back to updater...; "\
-		"run boot_updater\0"
+		"run boot_updater; " \
+		"echo Failed boot, reseting...; "\
+		"reset\0"
 #else
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
