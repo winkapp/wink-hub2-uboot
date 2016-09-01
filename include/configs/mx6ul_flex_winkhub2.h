@@ -216,7 +216,9 @@
 	"bootcmd=" \
 		"run boot_select; " \
 		"echo Falling back to updater...; "\
-		"run boot_updater\0"
+		"run boot_updater; " \
+		"echo Failed boot, reseting...; "\
+		"reset\0"
 #else
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
